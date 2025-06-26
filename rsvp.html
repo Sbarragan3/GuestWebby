@@ -22,6 +22,12 @@
       <p>Por favor sube una foto o firma para guardar tu recuerdo con cariño.</p>
     </section>
 
+	<h2>Sign with a Drawing</h2>
+	<canvas id="drawCanvas" width="300" height="300" style="border:1px solid #ccc; background:#fff;"></canvas>
+	<br>
+	<button onclick="saveDrawing()">Upload Drawing</button>
+
+
     <form id="uploadForm" enctype="multipart/form-data">
       <label for="file">Choose a file<br><small>Elige un archivo</small></label>
       <!DOCTYPE html>
@@ -100,6 +106,47 @@ gracias.";
       }
     });
   </script>
+<script>
+let drawing = false;
+const canvas = document.getElementById('drawCanvas');
+const ctx = canvas.getContext('2d');
+
+canvas.addEventListener('mousedown', () => drawing = true);
+canvas.addEventListener('mouseup', () => {
+  drawing = false;
+  ctx.beginPath();
+});
+canvas.addEventListener('mouseout', () => drawing = false);
+canvas.addEventListener('mousemove', draw);
+
+function draw(e) {
+  if (!drawing) return;
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#000';
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+async function saveDrawing() {
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  const formData = new FormData();
+  formData.append('file', blob, 'signature-drawing.png');
+
+  const response = await fetch('/.netlify/functions/upload-signature', {
+    method: 'POST',
+    body: formData
+  });
+
+  if (response.ok) {
+    alert('Signature drawing uploaded!');
+  } else {
+    alert('Upload failed.');
+  }
+}
+</script>
 </body>
 </html>
 
