@@ -1,0 +1,35 @@
+body {
+  font-family: 'Georgia', serif;
+  background-color: #f8f4f0;
+  color: #2d2d2d;
+  padding: 2rem;
+  text-align: center;
+}
+
+nav {
+  margin-bottom: 2rem;
+}
+
+ul.nav {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+ul.nav li a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #b30000;
+  border-bottom: 2px solid transparent;
+}
+
+ul.nav li a:hover {
+  border-color: #b30000;
+}
+
+a {
+  color: #b30000;
+}
