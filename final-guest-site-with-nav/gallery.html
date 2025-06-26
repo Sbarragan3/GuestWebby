@@ -3,70 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Photo Gallery / Galería de fotos</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Photo Gallery Upload</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1>Photo Gallery / Galería de fotos</h1>
+  <h1>Upload a Photo to the Gallery</h1>
 
-    <section>
-      <p><strong>ENGLISH:</strong><br>
-        This is where we’ll add photos from family, friends, and special memories. If you’d like to contribute a photo, you can upload it below and we’ll review it for addition to the gallery.
-      </p>
-      <p><strong>ESPAÑOL:</strong><br>
-        Aquí agregaremos fotos de la familia, amistades y recuerdos especiales. Si deseas compartir una foto, súbela aquí abajo y la revisaremos para añadirla a la galería.
-      </p>
-    </section>
+  <form id="uploadForm">
+    <input type="file" id="photo" name="photo" accept="image/*" required />
+    <button type="submit">Upload Photo</button>
+  </form>
 
-    <section>
-      <h2>Submit Your Photo / Enviar tu foto</h2>
-      <form id="upload-form" enctype="multipart/form-data">
-        <label for="photo"><strong>Choose a photo to upload / Elige una foto para subir:</strong></label><br>
-        <input type="file" id="photo" name="photo" accept="image/*" required><br><br>
-        <button type="submit">Upload / Subir</button>
-      </form>
-      <p id="upload-message"></p>
-    </section>
-
-    <nav>
-      <a href="index.html">← Back / Regresar</a>
-      |
-      <a href="rsvp.html">RSVP / Confirmar asistencia →</a>
-    </nav>
-  </main>
+  <p id="statusMessage"></p>
 
   <script>
-    document.getElementById('upload-form').addEventListener('submit', async function (e) {
+    document.getElementById('uploadForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const fileInput = document.getElementById('photo');
-      const file = fileInput.files[0];
+      const status = document.getElementById('statusMessage');
 
-      if (!file) {
-        alert("Please select a file to upload.");
+      if (!fileInput.files.length) {
+        status.textContent = 'Please select a photo.';
         return;
       }
 
       const formData = new FormData();
-      formData.append('photo', file);
+      formData.append('photo', fileInput.files[0]);
+
+      status.textContent = 'Uploading...';
 
       try {
-        const response = await fetch('/.netlify/functions/upload-photo', {
+        const res = await fetch('/.netlify/functions/upload-photo', {
           method: 'POST',
           body: formData
         });
 
-        const result = await response.json();
+        if (!res.ok) throw new Error('Server error');
+        const result = await res.json();
 
-        const messageEl = document.getElementById('upload-message');
-        if (response.ok) {
-          messageEl.textContent = "✅ Upload successful! / ¡Subida exitosa!";
-        } else {
-          messageEl.textContent = `❌ Error: ${result.error || "Something went wrong. / Algo salió mal."}`;
-        }
+        status.textContent = result.message || 'Upload successful!';
       } catch (err) {
-        document.getElementById('upload-message').textContent = "❌ Network error. / Error de red.";
+        console.error(err);
+        status.textContent = 'Upload failed. Please try again.';
       }
     });
   </script>
