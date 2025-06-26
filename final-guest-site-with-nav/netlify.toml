@@ -1,6 +1,7 @@
 [functions]
-  directory = "netlify/functions"
+directory = "netlify/functions"
+
 [[headers]]
-  for = "/*"
+for = "/*"
   [headers.values]
-    Basic-Auth = "guest:b0d@129"
+  Basic-Auth = "guest:b0d0129"
