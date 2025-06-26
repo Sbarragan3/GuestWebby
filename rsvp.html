@@ -1,1 +1,105 @@
-<!-- rsvp.html placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RSVP / Confirmar Asistencia</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>RSVP & Upload</h1>
+    <h2>Confirmar Asistencia y Subir Archivo</h2>
+    <nav>
+      <a href="index.html">Home<br><small>Inicio</small></a>
+      <a href="gallery-view.html">Gallery<br><small>Galería</small></a>
+      <a href="messages.html">Messages<br><small>Mensajes</small></a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <p>Please share a photo or signature so we can keep your memory with us.</p>
+      <p>Por favor sube una foto o firma para guardar tu recuerdo con cariño.</p>
+    </section>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label for="file">Choose a file<br><small>Elige un archivo</small></label>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RSVP / Confirmar Asistencia</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>RSVP & Upload</h1>
+    <h2>Confirmar Asistencia y Subir Archivo</h2>
+    <nav>
+      <a href="index.html">Home<br><small>Inicio</small></a>
+      <a href="gallery-view.html">Gallery<br><small>Galería</small></a>
+      <a href="messages.html">Messages<br><small>Mensajes</small></a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <p>Please share a photo or signature so we can keep your memory with us.</p>
+      <p>Por favor sube una foto o firma para guardar tu recuerdo con cariño.</p>
+    </section>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label for="file">Choose a file<br><small>Elige un archivo</small></label>
+      <input type="file" name="file" id="file" required />
+
+      <label for="uploadType">What are you sending?<br><small>¿Qué estás 
+enviando?</small></label>
+      <select name="uploadType" id="uploadType">
+        <option value="photo">Photo / Foto</option>
+        <option value="signature">Signature / Firma</option>
+      </select>
+
+      <button type="submit">Upload<br><small>Subir</small></button>
+    </form>
+
+    <p id="status" style="margin-top: 1rem;"></p>
+  </main>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const file = form.file.files[0];
+      const type = form.uploadType.value;
+
+      if (!file) {
+        status.innerHTML = "Please select a file.<br>Por favor selecciona un archivo.";
+        return;
+      }
+
+      const endpoint = type === 'signature'
+        ? '/.netlify/functions/upload-signature'
+        : '/.netlify/functions/upload-photo';
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        body: file,
+        headers: { 'Content-Type': file.type }
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        status.innerHTML = "Upload successful! Thank you.<br>¡Subido con éxito! Muchas 
+gracias.";
+        form.reset();
+      } else {
+        status.innerHTML = `Upload failed.<br>No se pudo subir el archivo.`;
+      }
+    });
+  </script>
+</body>
+</html>
+

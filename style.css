@@ -1,1 +1,132 @@
-/* style.css placeholder */
+/* Base styles */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff8f5;
+  color: #3e3e3e;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+h1, h2 {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+h1 {
+  color: #a52a2a; /* warm red */
+}
+
+h2 {
+  font-weight: normal;
+  font-size: 1.5rem;
+  color: #417a57; /* soft green */
+}
+
+nav {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+nav a {
+  display: inline-block;
+  background-color: #fbd6d2;
+  color: #333;
+  text-decoration: none;
+  padding: 12px 20px;
+  margin: 8px;
+  border-radius: 10px;
+  border: 2px solid #e8a8a3;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+nav a:hover {
+  background-color: #f9b8b2;
+}
+
+main {
+  padding: 1rem 2rem;
+  max-width: 700px;
+  margin: auto;
+}
+
+/* Forms */
+form {
+  background-color: #f2fff3;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 2px solid #bfe6c2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 1.5rem;
+}
+
+form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+form input[type="file"],
+form select,
+form button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+form button {
+  background-color: #ffecd9;
+  border: 2px solid #f5c49e;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1.2rem;
+}
+
+form button:hover {
+  background-color: #ffe0ba;
+}
+
+/* Gallery grid */
+.gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 1.5rem;
+}
+
+.gallery-grid img {
+  max-width: 100%;
+  width: 180px;
+  height: auto;
+  border-radius: 12px;
+  border: 2px solid #d6d6d6;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile-friendly */
+@media (max-width: 600px) {
+  nav a {
+    display: block;
+    margin: 10px auto;
+    width: 90%;
+  }
+
+  form {
+    padding: 1rem;
+  }
+
+  .gallery-grid img {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+

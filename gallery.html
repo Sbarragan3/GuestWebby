@@ -1,1 +1,64 @@
-<!-- gallery.html placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Uploads / Subidas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Gallery of All Uploads</h1>
+    <h2>Galería de Todas las Subidas</h2>
+    <nav>
+      <a href="index.html">Home<br><small>Inicio</small></a>
+      <a href="rsvp.html">RSVP / Sign<br><small>Confirmar / Firmar</small></a>
+      <a href="messages.html">Messages<br><small>Mensajes</small></a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h3>Photos<br><small>Fotos</small></h3>
+      <div id="photoGallery" class="gallery-grid"></div>
+    </section>
+
+    <section>
+      <h3>Signatures<br><small>Firmas</small></h3>
+      <div id="signatureGallery" class="gallery-grid"></div>
+    </section>
+  </main>
+
+  <script>
+    function loadGallery(folder, elementId) {
+      fetch(`/.netlify/functions/get-photos?folder=${folder}`)
+        .then(res => res.json())
+        .then(data => {
+          const gallery = document.getElementById(elementId);
+          if (!data.files.length) {
+            gallery.innerHTML = `
+              <p>No uploads yet.<br>No hay subidas todavía.</p>
+            `;
+          } else {
+            data.files.forEach(file => {
+              const img = document.createElement('img');
+              img.src = file.directDownload;
+              img.alt = file.name;
+              img.loading = 'lazy';
+              img.width = 200;
+              img.style.margin = '10px';
+              gallery.appendChild(img);
+            });
+          }
+        })
+        .catch(() => {
+          document.getElementById(elementId).innerHTML =
+            `<p>Error loading files.<br>Error al cargar los archivos.</p>`;
+        });
+    }
+
+    loadGallery('uploads', 'photoGallery');
+    loadGallery('signatures', 'signatureGallery');
+  </script>
+</body>
+</html>
+
