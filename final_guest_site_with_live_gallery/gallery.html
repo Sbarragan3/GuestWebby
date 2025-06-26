@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo Gallery / Galería de Fotos</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #fef9f4;
+      color: #333;
+      padding: 2rem;
+    }
+    nav a {
+      text-decoration: none;
+      margin: 0 10px;
+      color: #a52a2a;
+      font-weight: bold;
+    }
+    h1 {
+      color: #5a3e36;
+    }
+    #dropZone {
+      border: 2px dashed #ccc;
+      background-color: #fff;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+    #dropZone.dragover {
+      border-color: #a52a2a;
+      background-color: #fceeee;
+    }
+    #statusMessage {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    img.preview {
+      margin-top: 1rem;
+      max-width: 100%;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏡 Home / Inicio</a> |
+    <a href="rsvp.html">📝 RSVP</a> |
+    <a href="gallery.html">📸 Gallery / Galería</a>
+  </nav>
+
+  <h1>Photo Gallery / Galería de Fotos</h1>
+  <p>Drop or select a photo to share your moment with us. / Suelta o selecciona una foto para compartir tu momento.</p>
+
+  <div id="dropZone">Click or drop a photo here</div>
+  <input type="file" id="fileInput" accept="image/*" style="display:none;">
+  <p id="statusMessage"></p>
+  <img id="preview" class="preview" src="" style="display:none;" />
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const status = document.getElementById('statusMessage');
+    const preview = document.getElementById('preview');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) uploadPhoto(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file) uploadPhoto(file);
+    });
+
+    async function uploadPhoto(file) {
+      const formData = new FormData();
+      formData.append('photo', file);
+      status.textContent = 'Uploading...';
+      preview.style.display = 'none';
+
+      try {
+        const res = await fetch('/.netlify/functions/upload-photo', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!res.ok) throw new Error('Upload error');
+        const result = await res.json();
+        status.textContent = result.message || 'Upload successful!';
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Upload failed. Please try again.';
+      }
+    }
+  </script>
+</body>
+</html>

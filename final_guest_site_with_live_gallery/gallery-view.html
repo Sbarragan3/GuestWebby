@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Gallery View</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #fef9f4;
+      color: #333;
+      padding: 2rem;
+    }
+    nav a {
+      margin: 0 10px;
+      color: #a52a2a;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .gallery img {
+      width: 200px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏡 Home</a>
+    <a href="rsvp.html">📝 RSVP</a>
+    <a href="gallery.html">📸 Upload Photo</a>
+    <a href="gallery-view.html">🖼 View Gallery</a>
+    <a href="messages.html">💬 Message Board</a>
+  </nav>
+
+  <h1>Live Photo Gallery</h1>
+  <p>These are the wonderful memories shared by our guests 💛</p>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    async function loadGallery() {
+      const container = document.getElementById('gallery');
+      try {
+        const res = await fetch('/.netlify/functions/get-photos');
+        const data = await res.json();
+        data.images.forEach(img => {
+          const el = document.createElement('img');
+          el.src = img.url;
+          el.alt = img.name;
+          container.appendChild(el);
+        });
+      } catch (err) {
+        container.innerHTML = '<p>Failed to load gallery. Please try again later.</p>';
+      }
+    }
+
+    loadGallery();
+  </script>
+</body>
+</html>

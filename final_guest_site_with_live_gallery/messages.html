@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Message Board</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #fef9f4;
+      color: #333;
+      padding: 2rem;
+    }
+    nav a {
+      margin: 0 10px;
+      color: #a52a2a;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 1rem;
+    }
+    #messages {
+      border-top: 1px solid #ccc;
+      margin-top: 2rem;
+      padding-top: 1rem;
+    }
+    .message {
+      background: #fff;
+      border-left: 4px solid #a52a2a;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏡 Home</a>
+    <a href="rsvp.html">📝 RSVP</a>
+    <a href="gallery.html">📸 Upload Photo</a>
+    <a href="gallery-view.html">🖼 View Gallery</a>
+    <a href="messages.html">💬 Message Board</a>
+  </nav>
+
+  <h1>Leave Us a Message!</h1>
+  <form onsubmit="submitMessage(event)">
+    <label for="name">Your Name:</label><br>
+    <input type="text" id="name" required><br><br>
+    <label for="message">Message:</label><br>
+    <textarea id="message" required></textarea><br>
+    <button type="submit">Post Message</button>
+  </form>
+
+  <div id="messages">
+    <h2>Guest Messages</h2>
+    <div id="messageList"></div>
+  </div>
+
+  <script>
+    function submitMessage(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const msg = document.getElementById('message').value;
+
+      const entry = document.createElement('div');
+      entry.className = 'message';
+      entry.innerHTML = `<strong>${name}</strong><br>${msg}`;
+      document.getElementById('messageList').prepend(entry);
+
+      localStorage.setItem('guestMessages', document.getElementById('messages').innerHTML);
+
+      document.getElementById('name').value = '';
+      document.getElementById('message').value = '';
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem('guestMessages');
+      if (saved) {
+        document.getElementById('messages').innerHTML = saved;
+      }
+    };
+  </script>
+</body>
+</html>
