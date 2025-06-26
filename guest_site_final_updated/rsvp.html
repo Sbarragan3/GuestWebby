@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RSVP</title>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏡 Home / Inicio</a> |
+    <a href="rsvp.html">📝 RSVP</a> |
+    <a href="gallery.html">📸 Gallery / Galería</a>
+  </nav>
+
+  <h1>RSVP Form</h1>
+
+  <form>
+    Full Name(s): <input type="text" name="name"><br>
+    Number in Party: <input type="number" name="party"><br>
+    Will you attend? 
+    <select name="attend">
+      <option>Yes</option>
+      <option>No</option>
+    </select><br>
+    Dietary Needs: <input type="text" name="diet"><br>
+    Message: <textarea name="message"></textarea><br>
+    <button type="submit">Submit RSVP</button>
+  </form>
+
+  <hr>
+
+  <h2>Submit Your Name (A Special Keepsake)</h2>
+  <p>We’re collecting names from all our guests for something we’re putting together for the wedding.</p>
+  <p>You can write your name out like you’d sign it — either by typing it or drawing it below.</p>
+
+  <form>
+    Your Name (typed as you'd sign it): <input type="text"><br>
+    <button type="submit">Submit Typed Name</button>
+  </form>
+
+  <p>Draw your name below (use your finger or mouse)</p>
+  <canvas width="300" height="150" style="border:1px solid #ccc;"></canvas><br>
+  <button>Submit Drawn Name</button>
+</body>
+</html>
