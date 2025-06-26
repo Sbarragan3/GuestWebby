@@ -1,0 +1,7 @@
+
+[build]
+  publish = "final_guest_site_with_live_gallery"
+  functions = ".netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
