@@ -3,35 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Photo Gallery</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Photo Gallery / Galería de fotos</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+  <main>
+    <h1>Photo Gallery / Galería de fotos</h1>
 
-<nav>
-  <ul class="nav">
-    <li><a href="index.html">🏡 Home / Inicio</a></li>
-    <li><a href="rsvp.html">✉️ RSVP</a></li>
-    <li><a href="gallery.html">📸 Gallery / Galería</a></li>
-  </ul>
-</nav>
+    <section>
+      <p><strong>ENGLISH:</strong><br>
+        This is where we’ll add photos from family, friends, and special memories. If you’d like to contribute a photo, you can upload it below and we’ll review it for addition to the gallery.
+      </p>
+      <p><strong>ESPAÑOL:</strong><br>
+        Aquí agregaremos fotos de la familia, amistades y recuerdos especiales. Si deseas compartir una foto, súbela aquí abajo y la revisaremos para añadirla a la galería.
+      </p>
+    </section>
 
-  <h1>Upload a Photo / Subir una Foto</h1>
-  <p><strong>ENGLISH:</strong><br>
-  We’d love to see your photos! Use this form to upload a memory, a moment, or anything that makes you think of love, joy, or this celebration.  
-  We’ll be reviewing submissions before adding them to our gallery.
-  </p>
-  <p><strong>ESPAÑOL:</strong><br>
-  ¡Queremos ver tus fotos! Usa este formulario para subir una memoria, un momento especial o cualquier cosa que te recuerde al amor, la alegría o esta celebración.  
-  Vamos a revisar las fotos antes de agregarlas a nuestra galería.
-  </p>
-  <form name="photo-upload" method="POST" enctype="multipart/form-data" data-netlify="true">
-    <label>Your Name / Tu nombre: <input type="text" name="uploader" required></label><br>
-    <label>Description / Descripción: <input type="text" name="description"></label><br>
-    <label>Upload Image / Sube tu foto: <input type="file" name="photo" accept="image/*" required></label><br>
-    <p>By uploading, you give us permission to share this image at the wedding or on this site.  
-    / Al subir la imagen, nos das permiso para compartirla durante la boda o en esta página.</p>
-    <button type="submit">Submit / Enviar</button>
-  </form>
+    <section>
+      <h2>Submit Your Photo / Enviar tu foto</h2>
+      <form id="upload-form" enctype="multipart/form-data">
+        <label for="photo"><strong>Choose a photo to upload / Elige una foto para subir:</strong></label><br>
+        <input type="file" id="photo" name="photo" accept="image/*" required><br><br>
+        <button type="submit">Upload / Subir</button>
+      </form>
+      <p id="upload-message"></p>
+    </section>
+
+    <nav>
+      <a href="index.html">← Back / Regresar</a>
+      |
+      <a href="rsvp.html">RSVP / Confirmar asistencia →</a>
+    </nav>
+  </main>
+
+  <script>
+    document.getElementById('upload-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById('photo');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please select a file to upload.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('photo', file);
+
+      try {
+        const response = await fetch('/.netlify/functions/upload-photo', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        const messageEl = document.getElementById('upload-message');
+        if (response.ok) {
+          messageEl.textContent = "✅ Upload successful! / ¡Subida exitosa!";
+        } else {
+          messageEl.textContent = `❌ Error: ${result.error || "Something went wrong. / Algo salió mal."}`;
+        }
+      } catch (err) {
+        document.getElementById('upload-message').textContent = "❌ Network error. / Error de red.";
+      }
+    });
+  </script>
 </body>
 </html>
