@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo Gallery Upload</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    #statusMessage { margin-top: 1rem; font-weight: bold; }
+    #uploadedImage { margin-top: 1rem; max-width: 300px; display: none; }
+  </style>
+</head>
+<body>
+  <h1>Photo Gallery Upload</h1>
+
+  <p id="introMessage">
+    Welcome to the photo gallery! Upload your favorite moments to share with the group.<br />
+    <span lang="es">¡Bienvenida o bienvenido a la galería de fotos! Sube tus momentos favoritos para compartir con el grupo.</span>
+  </p>
+
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" id="photo" name="photo" accept="image/*" required />
+    <button type="submit">Upload Photo</button>
+  </form>
+
+  <p id="statusMessage"></p>
+  <img id="uploadedImage" src="" alt="Uploaded photo preview"/>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById('photo');
+      const status = document.getElementById('statusMessage');
+      const uploadedImage = document.getElementById('uploadedImage');
+
+      if (!fileInput.files.length) {
+        status.textContent = 'Please select a photo.';
+        return;
+      }
+
+      const formData = new FormData();
+      const file = fileInput.files[0];
+      formData.append('photo', file);
+
+      status.textContent = 'Uploading...';
+      uploadedImage.style.display = 'none';
+
+      try {
+        const res = await fetch('/.netlify/functions/upload-photo', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!res.ok) throw new Error('Server error');
+
+        const result = await res.json();
+        status.textContent = result.message || 'Upload successful!';
+
+        const localURL = URL.createObjectURL(file);
+        uploadedImage.src = localURL;
+        uploadedImage.style.display = 'block';
+
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Upload failed. Please try again. / Error al subir. Por favor, inténtalo de nuevo.';
+      }
+    });
+  </script>
+</body>
+</html>
