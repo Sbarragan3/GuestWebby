@@ -3,6 +3,8 @@ const stream = require('stream');
 const Busboy = require('busboy');
 
 exports.handler = async function (event, context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -10,7 +12,7 @@ exports.handler = async function (event, context) {
     };
   }
 
-  const folderId = '1f3_pbr-itTdXzAmbuP2ZQTqIhw-mCuiy'; // Replace with your folder ID
+  const folderId = '1f3_pbr-itTdXzAmbuP2ZQTqIhw-mCuiy';
   const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
 
   const auth = new google.auth.JWT(
@@ -26,7 +28,7 @@ exports.handler = async function (event, context) {
     const busboy = Busboy({ headers: event.headers });
     const buffers = [];
 
-    let fileName = 'upload.jpg'; // fallback
+    let fileName = 'upload.jpg';
     let mimeType = 'application/octet-stream';
 
     busboy.on('file', (fieldname, file, info) => {
@@ -57,7 +59,8 @@ exports.handler = async function (event, context) {
         resolve({
           statusCode: 200,
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ message: 'Upload successful!' })
         });
@@ -70,6 +73,7 @@ exports.handler = async function (event, context) {
       }
     });
 
-    busboy.end(Buffer.from(event.body, 'base64'));
+    const encoding = event.isBase64Encoded ? 'base64' : 'utf8';
+    busboy.end(Buffer.from(event.body, encoding));
   });
 };
