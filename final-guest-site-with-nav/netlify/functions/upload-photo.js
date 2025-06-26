@@ -13,7 +13,7 @@ exports.handler = async function(event, context) {
   const busboy = Busboy({ headers: event.headers });
   const fileBuffers = [];
 
-  const folderId = '1f3_pbr-itTdXzAmbuP2ZQTqIhw-mCuiy'; // Your Drive folder ID
+  const folderId = '1f3_pbr-itTdXzAmbuP2ZQTqIhw-mCuiy'; // Your correct Google Drive folder ID
 
   const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
   const auth = new google.auth.JWT(
