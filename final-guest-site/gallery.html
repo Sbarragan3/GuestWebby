@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo Gallery</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Upload a Photo / Subir una Foto</h1>
+  <p><strong>ENGLISH:</strong><br>
+  We’d love to see your photos! Use this form to upload a memory, a moment, or anything that makes you think of love, joy, or this celebration.  
+  We’ll be reviewing submissions before adding them to our gallery.
+  </p>
+  <p><strong>ESPAÑOL:</strong><br>
+  ¡Queremos ver tus fotos! Usa este formulario para subir una memoria, un momento especial o cualquier cosa que te recuerde al amor, la alegría o esta celebración.  
+  Vamos a revisar las fotos antes de agregarlas a nuestra galería.
+  </p>
+  <form name="photo-upload" method="POST" enctype="multipart/form-data" data-netlify="true">
+    <label>Your Name / Tu nombre: <input type="text" name="uploader" required></label><br>
+    <label>Description / Descripción: <input type="text" name="description"></label><br>
+    <label>Upload Image / Sube tu foto: <input type="file" name="photo" accept="image/*" required></label><br>
+    <p>By uploading, you give us permission to share this image at the wedding or on this site.  
+    / Al subir la imagen, nos das permiso para compartirla durante la boda o en esta página.</p>
+    <button type="submit">Submit / Enviar</button>
+  </form>
+</body>
+</html>

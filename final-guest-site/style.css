@@ -1,0 +1,8 @@
+body {
+  font-family: 'Georgia', serif;
+  background-color: #f8f4f0;
+  color: #2d2d2d;
+  padding: 2rem;
+  text-align: center;
+}
+a { margin: 1rem; display: inline-block; color: #b30000; }
