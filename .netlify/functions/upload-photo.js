@@ -1,71 +1,51 @@
-
 const { google } = require('googleapis');
-const stream = require('stream');
 const Busboy = require('busboy');
 
-exports.handler = async function (event) {
+exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
+  const busboy = Busboy({ headers: event.headers });
+  const fileBuffers = [];
+
   return new Promise((resolve, reject) => {
-    const busboy = new Busboy({ headers: event.headers });
-    const fileBuffers = [];
-    let fileName = '';
-    let mimeType = '';
-
-    const folderId = '1f3_pbr-itTdXzAmbuP2ZQTqIhw-mCuiy';
-
-    let serviceAccount;
-    try {
-      serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-    } catch (err) {
-      console.error('Invalid service account key:', err);
-      return resolve({ statusCode: 500, body: 'Invalid service account key' });
-    }
-
-    const auth = new google.auth.JWT(
-      serviceAccount.client_email,
-      null,
-      serviceAccount.private_key,
-      ['https://www.googleapis.com/auth/drive.file']
-    );
-
-    const drive = google.drive({ version: 'v3', auth });
-
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-      fileName = filename;
-      mimeType = mimetype;
-      file.on('data', (data) => fileBuffers.push(data));
+      const buffers = [];
+      file.on('data', data => buffers.push(data));
+      file.on('end', () => {
+        fileBuffers.push({ buffer: Buffer.concat(buffers), filename, mimetype });
+      });
     });
 
     busboy.on('finish', async () => {
       try {
-        const fileBuffer = Buffer.concat(fileBuffers);
-        const bufferStream = new stream.PassThrough();
-        bufferStream.end(fileBuffer);
+        const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+        const auth = new google.auth.JWT(
+          serviceAccount.client_email,
+          null,
+          serviceAccount.private_key,
+          ['https://www.googleapis.com/auth/drive.file']
+        );
+        const drive = google.drive({ version: 'v3', auth });
 
-        const response = await drive.files.create({
+        const upload = await drive.files.create({
           requestBody: {
-            name: fileName,
-            parents: [folderId],
+            name: fileBuffers[0].filename,
+            parents: ['1f3_pbr-itTdXzAmbuP2ZQTqIhw-mCuiy'], // 📸 Photo folder ID
           },
           media: {
-            mimeType,
-            body: bufferStream,
+            mimeType: fileBuffers[0].mimetype,
+            body: Buffer.from(fileBuffers[0].buffer),
           },
         });
 
-        return resolve({
+        resolve({
           statusCode: 200,
-          body: JSON.stringify({ message: 'Upload successful', fileId: response.data.id }),
+          body: JSON.stringify({ success: true, fileId: upload.data.id }),
         });
-      } catch (error) {
-        console.error('Upload failed:', error);
-        return resolve({
-          statusCode: 500,
-          body: JSON.stringify({ message: 'Upload failed', error: error.message }),
-        });
+      } catch (err) {
+        reject({ statusCode: 500, body: JSON.stringify({ error: err.message }) });
       }
     });
 
